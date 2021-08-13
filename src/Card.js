@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useContext } from 'react'
+import { Link } from 'react-router-dom';
+import UserContext from './UserContext';
 
-function Card({ Name, Age, Place }) {
-  return (
-    <div>
-      <p>{Name}</p>
-      <p>{Age}</p>
-      <p>{Place}</p>
-    </div>
-  );
+function Card() {
+    const usercontext = useContext(UserContext);
+    return (
+        <Link to="/card">
+            <h2>
+            {usercontext}
+            </h2>
+        </Link>
+    );
 }
 
 export default Card;
