@@ -24,7 +24,7 @@ function EditProduct(props) {
     let productData = { userName, position, office, age, startDate, salary };
     productContext.productList[props.match.params.id - 1] = productData;
     productContext.setProductList([...productContext.productList, productData]);
-    history.push("/user");
+    history.push("/product");
   };
   return (
     <div>
