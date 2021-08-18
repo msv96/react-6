@@ -16,7 +16,7 @@ function CreateProduct() {
     el.preventDefault();
     let productData = { userName, position, office, age, startDate, salary };
     productContext.setProductList([...productContext.productList, productData]);
-    history.push("/user");
+    history.push("/product");
   };
   return (
     <div>
