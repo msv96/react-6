@@ -1,49 +1,65 @@
-import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import UserContext from "./UserContext";
+
 function EditUser(props) {
-  const [userName, setUserName] = useState("");
+  const [name, setName] = useState("");
   const [position, setPosition] = useState("");
-  const [office, setOffice] = useState("");
-  const [age, setAge] = useState("");
-  const [startDate, setStartDate] = useState("");
+  const [mail, setMail] = useState("");
   const [salary, setSalary] = useState("");
-  const userContext = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
+
   useEffect(() => {
-    let userData = userContext.userList[props.match.params.id - 1];
-    setUserName(userData.userName);
-    setPosition(userData.position);
-    setOffice(userData.office);
-    setAge(userData.age);
-    setStartDate(userData.startDate);
-    setSalary(userData.salary);
-  }, [props.match.params.id, userContext]);
-  let handleSubmit = (el) => {
+    let fetchData = async () => {
+      try {
+        let users = await axios.get(
+          `https://60f460de3cb0870017a8a216.mockapi.io/users/${props.match.params.id}`
+        );
+        setName(users.data.name);
+        setPosition(users.data.position);
+        setMail(users.data.mail);
+        setSalary(users.data.salary);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, [props]);
+
+  let handleSubmit = async (el) => {
     el.preventDefault();
-    let userData = { userName, position, office, age, startDate, salary };
-    userContext.userList[props.match.params.id - 1] = userData;
-    userContext.setUserList([...userContext.userList]);
+    try {
+      setLoading(true);
+      await axios.put(
+        `https://60f460de3cb0870017a8a216.mockapi.io/users/${props.match.params.id}`,
+        { name, position, mail, salary }
+      );
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
     history.push("/user");
   };
+
   return (
     <div>
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 className="h3 mb-0 text-gray-800">Edit User</h1>
+        <h1 className="h3 mb-0 text-gray-800">Update User</h1>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="container">
           <div className="row">
             <div className="col-lg-6">
-              <label>Username</label>
+              <label>Name</label>
               <input
                 type="text"
                 className="form-control"
-                value={userName}
+                value={name}
                 onChange={(el) => {
-                  setUserName(el.target.value);
+                  setName(el.target.value);
                 }}
-                required
               />
             </div>
             <div className="col-lg-6">
@@ -55,43 +71,17 @@ function EditUser(props) {
                 onChange={(el) => {
                   setPosition(el.target.value);
                 }}
-                required
               />
             </div>
             <div className="col-lg-6">
-              <label>Office</label>
+              <label>Email ID</label>
               <input
                 type="text"
                 className="form-control"
-                value={office}
+                value={mail}
                 onChange={(el) => {
-                  setOffice(el.target.value);
+                  setMail(el.target.value);
                 }}
-                required
-              />
-            </div>
-            <div className="col-lg-6">
-              <label>Age</label>
-              <input
-                type="text"
-                className="form-control"
-                value={age}
-                onChange={(el) => {
-                  setAge(el.target.value);
-                }}
-                required
-              />
-            </div>
-            <div className="col-lg-6">
-              <label>Start Date</label>
-              <input
-                type="date"
-                className="form-control"
-                value={startDate}
-                onChange={(el) => {
-                  setStartDate(el.target.value);
-                }}
-                required
               />
             </div>
             <div className="col-lg-6">
@@ -103,7 +93,6 @@ function EditUser(props) {
                 onChange={(el) => {
                   setSalary(el.target.value);
                 }}
-                required
               />
             </div>
             <div className="col-lg-12">
@@ -111,6 +100,7 @@ function EditUser(props) {
                 type="submit"
                 value="Update"
                 className="btn btn-primary mt-3"
+                disabled={loading}
               />
             </div>
           </div>
