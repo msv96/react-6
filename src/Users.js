@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import "./skeleton.css";
 
 function Users() {
   const [userList, setUserList] = useState([]);
@@ -57,56 +58,75 @@ function Users() {
         </div>
         <div className="card-body">
           <div className="table-responsive">
-            {loading ? (
-              <h2>Loading...</h2>
-            ) : (
-              <table
-                className="table table-bordered"
-                id="dataTable"
-                width="100%"
-                cellSpacing="0"
-              >
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Position</th>
-                    <th>Email ID</th>
-                    <th>Salary</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {userList.map((el) => {
-                    return (
-                      <tr>
-                        <td>{el.id}</td>
-                        <td>{el.name}</td>
-                        <td>{el.position}</td>
-                        <td>{el.mail}</td>
-                        <td>$ {el.salary}</td>
-                        <td>
-                          <Link
-                            to={`/user/edit/${el.id}`}
-                            className="btn btn-info"
-                          >
-                            Update
-                          </Link>
-                          <button
-                            className="btn btn-danger ml-3"
-                            onClick={() => {
-                              handleDelete(el.id);
-                            }}
-                          >
-                            Delete
-                          </button>
+            <table
+              className="table table-bordered"
+              id="dataTable"
+              width="100%"
+              cellSpacing="0"
+            >
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Position</th>
+                  <th>Email ID</th>
+                  <th>Salary</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading
+                  ? [...Array(20)].map((e, index) => (
+                      <tr key={index * 9}>
+                        <td className="skeleton">
+                          <div className="wrap"></div>
+                        </td>
+                        <td className="skeleton">
+                          <div className="wrap"></div>
+                        </td>
+                        <td className="skeleton">
+                          <div className="wrap"></div>
+                        </td>
+                        <td className="skeleton">
+                          <div className="wrap"></div>
+                        </td>
+                        <td className="skeleton">
+                          <div className="wrap"></div>
+                        </td>
+                        <td className="skeleton">
+                          <div className="wrap"></div>
                         </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
+                    ))
+                  : userList.map((el) => {
+                      return (
+                        <tr key={el.id * 54}>
+                          <td>{el.id}</td>
+                          <td>{el.name}</td>
+                          <td>{el.position}</td>
+                          <td>{el.mail}</td>
+                          <td>$ {el.salary}</td>
+                          <td>
+                            <Link
+                              to={`/user/edit/${el.id}`}
+                              className="btn btn-info"
+                            >
+                              Update
+                            </Link>
+                            <button
+                              className="btn btn-danger ml-3"
+                              onClick={() => {
+                                handleDelete(el.id);
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
